@@ -1,11 +1,11 @@
             How To Implementation External Authentication Programs
 	       for mod_authnz_external or mod_auth_external
-	       			Version 3.2.0
+	       			Version 3.3.x
 
 LANGUAGES
 
  External authenticators can be written in almost any language.  The sample
- authenticators in the 'test' directory are in Perl.  The 'pwauth'
+ authenticators in the 'test' directory are in Perl and PHP.  The 'pwauth'
  authenticator is in ANSI C.  The example code fragments in this document
  are in C.
 
@@ -39,6 +39,9 @@ SECURITY
    
     rlim.rlim_cur = rlim.rlim_max = 0;
     (void)setrlimit(RLIMIT_CORE, &rlim);
+
+   Actually, core dumps seem to be mostly a thing of the past. Most modern
+   Unixes don't seem to generate them.
 
  It may not hurt to spend a little time looking at the features of the pwauth
  authenticator, which is the most secure external authenticator that I have
@@ -114,7 +117,9 @@ PASSWORD AUTHENTICATORS
   USER and PASS environment variables respectively.
   
   Note that the environment method has fundamental security weaknesses,
-  and should probably not be used.  Use the pipe method instead.
+  and should probably not be used unless you have cause to believe it is
+  safe on your system. I wouldn't be surprised if it is marginally faster
+  than the pipe method. Most applications should use the pipe method instead.
 
   A typical chunk of C code to authenticate with the environment method
   might be like:
@@ -244,7 +249,8 @@ OTHER ENVIRONMENT VARIABLES
 
     IP        the client's ip-address.
 
-    HOST      the client's host name, if Apache has "HostnameLookups On".
+    HOST      the host name corresponding to IP, if Apache has
+              "HostnameLookups On".
 
     PATH      the httpd's path environment variable.
 
